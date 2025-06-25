@@ -27,7 +27,3 @@
 - Встановлений PostgreSQL
 - Maven або підтримка у IDE (наприклад, IntelliJ)
 
-### 1. Клонування репозиторію
-```bash
-git clone https://github.com/Delberqqq/file-manager.git
-cd file-manager/backend
