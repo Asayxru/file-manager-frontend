@@ -19,13 +19,13 @@ const Login = ({ onLogin }) => {
         const res = await axios.get(`/users/check-username?username=${username}`);
         setUsernameExists(res.data.exists);
       } catch {
-        setUsernameExists(false); // Якщо помилка — вважаємо, що унікальний
+        setUsernameExists(false);
       }
     };
     if (!isLogin) checkUsername();
   }, [username, isLogin]);
 
-  // Перевірка унікальності email
+  
   useEffect(() => {
     const checkEmail = async () => {
       if (email.trim() === '') return;

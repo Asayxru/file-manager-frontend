@@ -8,21 +8,35 @@ const UploadFileForm = () => {
   const [filesInFolder, setFilesInFolder] = useState([]);
 
   useEffect(() => {
-    // Отримуємо всі папки
     const fetchFolders = async () => {
-      const res = await axios.get('/folders');
-      setFolders(res.data);
+      try {
+        const res = await axios.get('/folders', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setFolders(res.data);
+      } catch (err) {
+        console.error('Помилка при отриманні папок:', err);
+      }
     };
     fetchFolders();
   }, []);
 
   useEffect(() => {
-    // Отримуємо файли в обраній папці
     const fetchFiles = async () => {
       if (folderId) {
-        const res = await axios.get('/files');
-        const filtered = res.data.filter(file => file.folderId === Number(folderId));
-        setFilesInFolder(filtered);
+        try {
+          const res = await axios.get('/files', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+          const filtered = res.data.filter(file => file.folderId === Number(folderId));
+          setFilesInFolder(filtered);
+        } catch (err) {
+          console.error('Помилка при отриманні файлів:', err);
+        }
       } else {
         setFilesInFolder([]);
       }
@@ -31,12 +45,23 @@ const UploadFileForm = () => {
   }, [folderId]);
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('folderId', folderId);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folderId', folderId);
 
-    await axios.post('/files/upload', formData);
-    window.location.reload();
+      await axios.post('/files/upload', formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Помилка при завантаженні файлу:', error);
+      alert('Немає доступу. Можливо, ви неавторизовані або токен недійсний.');
+    }
   };
 
   return (
